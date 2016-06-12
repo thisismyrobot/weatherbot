@@ -3,6 +3,8 @@ import re
 import requests
 import urlparse
 
+import image
+
 
 FTP_DOMAIN = 'ftp2.bom.gov.au'
 CDN_ROOT = 'http://ws.cdn.bom.gov.au/radar/'
@@ -26,4 +28,8 @@ def get():
 
     cdn_url = urlparse.urljoin(CDN_ROOT, newest_img)
 
-    return requests.get(cdn_url).content
+    img_data = requests.get(cdn_url).content
+
+    trimmed_data = image.trim(img_data, top_px=16, bottom_px=14)
+
+    return trimmed_data
