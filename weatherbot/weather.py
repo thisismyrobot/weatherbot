@@ -12,9 +12,24 @@ IMG_ROOT = 'anon/gen/radar/'
 IMG_FILTER = r'(IDR763\.T\.(.*)\.png)'
 
 
+def _download(filename):
+    """Download an image from the CDN, by filename."""
+    cdn_url = urlparse.urljoin(CDN_ROOT, filename)
+    return requests.get(cdn_url).content
+
+
+def _prepare_image(img_data):
+    """Trim off non-image data."""
+    pil_img = image.data_to_pil(img_data)
+    pil_img_trimmed = image.trim(pil_img, top_px=16, bottom_px=14)
+    return image.pil_to_data(pil_img_trimmed)
+
+
 def get():
     """Customise to return a radar image of your location when get() is
     called.
+
+    May use multiple images in a later iteration, hence the maps etc.
     """
     ftp = ftplib.FTP(FTP_DOMAIN)
     ftp.login()
@@ -22,14 +37,10 @@ def get():
                             for f
                             in ftp.nlst(IMG_ROOT)])
 
-    newest_img = sorted(
-        matches, key=lambda m: int(m.groups()[1]), reverse=True
-    )[0].groups()[0]
+    filenames = [m.groups()[0]
+                 for m
+                 in sorted(matches, key=lambda m: int(m.groups()[1]))][-1:]
 
-    cdn_url = urlparse.urljoin(CDN_ROOT, newest_img)
+    images = map(_download, filenames)
 
-    img_data = requests.get(cdn_url).content
-
-    trimmed_data = image.trim(img_data, top_px=16, bottom_px=14)
-
-    return trimmed_data
+    return map(_prepare_image, images)[0]

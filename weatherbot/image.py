@@ -4,24 +4,22 @@ import StringIO
 from PIL import Image
 
 
-def trim(img, top_px=0, right_px=0, bottom_px=0, left_px=0, extension='PNG'):
-    """Trim pixels around image data."""
-    sio_in = StringIO.StringIO(img)
-    img_in = Image.open(sio_in)
+def data_to_pil(img_data):
+    """Return PIL image from image data."""
+    return Image.open(StringIO.StringIO(img_data))
 
-    width, height = img_in.size
 
-    box = (
-        left_px, top_px,
-        width - right_px, height - bottom_px
-    )
-
-    print width, height, box
-
-    img_out = img_in.crop(box)
-
+def pil_to_data(pil_img, extension='PNG'):
     sio_out = StringIO.StringIO()
-
-    img_out.save(sio_out, extension)
-
+    pil_img.save(sio_out, extension)
     return sio_out.getvalue()
+
+
+def trim(pil_img, top_px=0, right_px=0, bottom_px=0, left_px=0):
+    """Trim pixels around pil image data."""
+    width, height = pil_img.size
+    box = (left_px, top_px, width - right_px, height - bottom_px)
+    return pil_img.crop(box)
+
+
+

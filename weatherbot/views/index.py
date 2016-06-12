@@ -11,7 +11,7 @@ def index():
 
 
 @app.route('/latest.png')
-@cache.memoize(60)
+@cache.memoize(300)
 def latest():
     """The latest image."""
     return weather.get()
