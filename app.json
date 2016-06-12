@@ -1,0 +1,10 @@
+{
+  "name": "weatherbot",
+  "description": "Rainfall-alerting twitter bot.",
+  "website": "thisismyrobot.com",
+  "image": "heroku/python",
+  "repository": "https://github.com/thisismyrobot/weatherbot",
+  "keywords": [
+    "python", "flask", "weather", "thisismyrobot", "twitter"
+  ],
+}
