@@ -22,4 +22,14 @@ def trim(pil_img, top_px=0, right_px=0, bottom_px=0, left_px=0):
     return pil_img.crop(box)
 
 
+def clouds(pil_img, size=51):
+    """Returns cloud locations.
 
+    This is initially done by down-sampling the image to a small size and
+    finding non-transparent pixels.
+
+    Assumes that the image is roughly square.
+    """
+    pil_img_sml = pil_img.resize((size, size), Image.LANCZOS)
+
+    return pil_img_sml.resize(pil_img.size), [p == 31 for p in pil_img_sml.getdata()]
