@@ -24,6 +24,6 @@ def clouds():
     img = latest()
 
     pil_img = image.data_to_pil(img)
-    clouds_pil_img, cloud_map = image.clouds(pil_img)
+    clouds_pil_img = image.clouds(pil_img)
 
     return image.pil_to_data(clouds_pil_img)
