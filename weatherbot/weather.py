@@ -1,15 +1,13 @@
-import ftplib
-import re
+"""Download weather data from the BOM."""
+import datetime
 import requests
 import urlparse
 
 import image
 
 
-FTP_DOMAIN = 'ftp2.bom.gov.au'
 CDN_ROOT = 'http://ws.cdn.bom.gov.au/radar/'
-IMG_ROOT = 'anon/gen/radar/'
-IMG_FILTER = r'(IDR763\.T\.(.*)\.png)'
+IMG_TEMPLATE = r'IDR763.T.{}.png'
 
 
 def _download(filename):
@@ -25,22 +23,25 @@ def _prepare_image(img_data):
     return image.pil_to_data(pil_img_trimmed)
 
 
+def _filename():
+    """Return the filename to download."""
+    utc_ts = datetime.datetime.utcnow()
+
+    # We'd rather get a slightly older than keep missing them.
+    utc_ts_old = utc_ts - datetime.timedelta(minutes=6)
+
+    # The images are every 6 minutes
+    minutes = int(utc_ts_old.minute / 6) * 6
+
+    file_ts = utc_ts_old.replace(minute=minutes)
+
+    return IMG_TEMPLATE.format(file_ts.strftime('%Y%m%d%H%M'))
+
+
 def get():
     """Customise to return a radar image of your location when get() is
     called.
-
-    May use multiple images in a later iteration, hence the maps etc.
     """
-    ftp = ftplib.FTP(FTP_DOMAIN)
-    ftp.login()
-    matches = filter(None, [re.search(IMG_FILTER, f)
-                            for f
-                            in ftp.nlst(IMG_ROOT)])
-
-    filenames = [m.groups()[0]
-                 for m
-                 in sorted(matches, key=lambda m: int(m.groups()[1]))][-1:]
-
-    images = map(_download, filenames)
-
-    return map(_prepare_image, images)[0]
+    filename = _filename()
+    img = _download(filename)
+    return _prepare_image(img)
