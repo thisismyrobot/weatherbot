@@ -1,3 +1,3 @@
 """Launch."""
 from weatherbot import app
-app.run(debug=True)
+app.run(host='', debug=True)

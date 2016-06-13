@@ -24,7 +24,7 @@ def trim(pil_img, top_px=0, right_px=0, bottom_px=0, left_px=0):
     return pil_img.crop(box)
 
 
-def clouds(pil_img, size=8):
+def clouds(pil_img, size=16):
     """Returns cloud intensity per grid square in the original image.
 
     Assumes that the image is roughly square.
@@ -39,15 +39,15 @@ def clouds(pil_img, size=8):
         for y in range(height):
             pixel = pil_img.getpixel((x, y))
             mapped_x = int((float(x) / width) * size)
-            mapped_y = int((float(y) / width) * size)
+            mapped_y = int((float(y) / height) * size)
 
             if pixel != 31:
                 value_map[(mapped_x, mapped_y)] += 1
 
-    max_val = max(value_map.values())
+    grid_size = (width / size) * (height / size)
 
     for (coord, value) in value_map.items():
-        val = int((float(value)/max_val) * 255)
-        cloud_map.putpixel(coord, (0, 0, val))
+        prop_val = int((float(value) / grid_size) * 255)
+        cloud_map.putpixel(coord, (0, 0, prop_val))
 
     return cloud_map.resize(pil_img.size)
