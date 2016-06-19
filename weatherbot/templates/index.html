@@ -6,11 +6,53 @@
         <meta name="description" content="Rainfall-alerting twitter bot">
         <meta name="author" content="Robert Wallhead">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <style type="text/css">
+            img {
+                width: 256px;
+                height: 256px;
+                background-color: rgb(255, 165, 0);
+            }
+            td {
+                text-align: center;
+            }
+        </style>
     </head>
     <body>
         <div>
-            <img src="/clouds.png" style="position:absolute; background-color: rgba(255, 128, 128, 128);" />
-            <img src="/latest.png" style="position:absolute;" />
+            <table>
+                <tr>
+                    <td>
+                    </td>
+                    <td>
+                        Radar
+                    </td>
+                    <td>
+                        Rain detection
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Latest
+                    </td>
+                    <td>
+                        <img src="/radar_1.png" />
+                    </td>
+                    <td>
+                        <img src="/clouds_1.png" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Older
+                    </td>
+                    <td>
+                        <img src="/radar_2.png" />
+                    </td>
+                    <td>
+                        <img src="/clouds_2.png" />
+                    </td>
+                </tr>
+            </table>
         </div>
     </body>
 </html>

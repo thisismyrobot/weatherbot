@@ -10,18 +10,18 @@ def index():
     return flask.render_template('index.html')
 
 
-@app.route('/latest.png')
+@app.route('/radar_<int:index>.png')
 @cache.memoize(300)
-def latest():
-    """The latest image."""
-    img = weather.get()
-    return img
+def radar_image(index):
+    """Historical radar images."""
+    assert 0 <= index <= 5
+    return weather.get(index)
 
 
-@app.route('/clouds.png')
-def clouds():
+@app.route('/clouds_<int:index>.png')
+def clouds(index):
     """Return a PNG with cloudy sections highlighted PNG."""
-    img = latest()
+    img = radar_image(index)
 
     pil_img = image.data_to_pil(img)
     clouds_pil_img = image.clouds(pil_img)
