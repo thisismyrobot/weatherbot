@@ -6,3 +6,14 @@ location based on rain radar.
 # Platform
 
 Heroku.
+
+# Local install
+
+    pip install -r requirements.txt
+    python run_local_server.py
+
+# Tests
+
+    cd tests
+    pip install -r requirements.txt
+    py.test

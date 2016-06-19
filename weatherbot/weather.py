@@ -23,18 +23,26 @@ def _prepare_image(img_data):
     return image.pil_to_data(pil_img_trimmed)
 
 
-def _filename():
+def _file_date(start=None, steps=0, step_size=6):
+    """Return a file date back a number of steps (zero = most recent), from
+    now or a chosen time. Steps are 6 minutes by default.
+    """
+    if start is None:
+        start = datetime.datetime.utcnow()
+
+    # Round minutes down to the nearest 6-minute interval
+    start_rounded = start.replace(
+        minute=int(start.minute / float(step_size)) * step_size,
+        second=0,
+        microsecond=0,
+    )
+
+    return start_rounded - datetime.timedelta(minutes=steps * step_size)
+
+
+def filename(start=None):
     """Return the filename to download."""
-    utc_ts = datetime.datetime.utcnow()
-
-    # We'd rather get a slightly older than keep missing them.
-    utc_ts_old = utc_ts - datetime.timedelta(minutes=6)
-
-    # The images are every 6 minutes
-    minutes = int(utc_ts_old.minute / 6) * 6
-
-    file_ts = utc_ts_old.replace(minute=minutes)
-
+    file_ts = _file_date(start=start)
     return IMG_TEMPLATE.format(file_ts.strftime('%Y%m%d%H%M'))
 
 
@@ -42,6 +50,6 @@ def get():
     """Customise to return a radar image of your location when get() is
     called.
     """
-    filename = _filename()
-    img = _download(filename)
+    img_filename = filename()
+    img = _download(img_filename)
     return _prepare_image(img)
