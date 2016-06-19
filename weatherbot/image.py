@@ -7,7 +7,8 @@ from PIL import Image
 
 def data_to_pil(img_data):
     """Return PIL image from image data."""
-    return Image.open(StringIO.StringIO(img_data))
+    img = Image.open(StringIO.StringIO(img_data))
+    return img.convert('RGBA')
 
 
 def pil_to_data(pil_img, extension='PNG'):
@@ -22,6 +23,11 @@ def trim(pil_img, top_px=0, right_px=0, bottom_px=0, left_px=0):
     width, height = pil_img.size
     box = (left_px, top_px, width - right_px, height - bottom_px)
     return pil_img.crop(box)
+
+
+def overlay(background, foreground):
+    """Does an overlay of PIL images."""
+    return Image.alpha_composite(background, foreground)
 
 
 def clouds(pil_img, size=16):
@@ -41,7 +47,7 @@ def clouds(pil_img, size=16):
             mapped_x = int((float(x) / width) * size)
             mapped_y = int((float(y) / height) * size)
 
-            if pixel != 31:
+            if pixel != (0, 0, 0, 0):
                 value_map[(mapped_x, mapped_y)] += 1
 
     grid_size = (width / size) * (height / size)

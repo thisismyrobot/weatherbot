@@ -19,11 +19,14 @@ def radar_image(index):
 
 
 @app.route('/clouds_<int:index>.png')
+@cache.memoize(300)
 def clouds(index):
-    """Return a PNG with cloudy sections highlighted PNG."""
+    """Return a PNG with cloudy sections highlighted."""
     img = radar_image(index)
 
     pil_img = image.data_to_pil(img)
     clouds_pil_img = image.clouds(pil_img)
 
-    return image.pil_to_data(clouds_pil_img)
+    layered_pil_img = image.overlay(clouds_pil_img, pil_img)
+
+    return image.pil_to_data(layered_pil_img)
